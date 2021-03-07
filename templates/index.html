@@ -56,8 +56,8 @@
                 xmlhttp.send(JSON.stringify(Object.assign({},form_data_array)));
             };
             function view_status(button){
-                makeAjaxCall("/test_request",Object({'status': true}),function(response){
-                    document.getElementById('result').value = response.state;
+                makeAjaxCall("/get_status",Object({'status': true}),function(response){
+                    document.getElementById('result').value = response.status;
                 });
             };
         </script>

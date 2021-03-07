@@ -28,14 +28,13 @@ class sensors_pool(object):
     def __init__(self, num_threads,sensors_folder,fifo_prefix):
         self.tasks = Queue(num_threads);
         self.sensors_folder = sensors_folder;
-        fifos_arr = list();
+        chrdev_arr = list();
         for i in range(num_threads):
-            fifos_arr.append(
+            chrdev_arr.append(
                 os.path.join(self.sensors_folder,fifo_prefix+str(i)));
             try:
-                curr_fifo = fifos_arr[-1];
-                print("creating FIFO: %s"%curr_fifo);
-                os.mkfifo(curr_fifo);
+                curr_dev = chrdev_arr[-1];
+                os.mknod(curr_dev);
             except Exception as ex:
                 print("Failed to create FIFO: %s"%ex);
         for _ in range(num_threads):
@@ -58,14 +57,15 @@ if __name__ == "__main__":
     from get_config import get_config
     params = get_config();
     def run_sensor(freq, filename, seconds_to_work):
-        sensor_id = filename.split("_")[1];
-        sensor_IO = open(filename,'w');
+        sensor_id = filename.split("_")[2];
         start_time = time.time();
         waiting_time = 0;
+        sensor_IO = open(filename,'w+');
         while seconds_to_work - (time.time()-start_time) >= 0:
-            time.sleep(1.0/freq);
+            sensor_IO.seek(0, 0);
+            time.sleep(0.85/freq);
             message = json.dumps({"sens_num": sensor_id,
-                                  "datetime": time.localtime(),
+                                  "datetime": time.strftime("%Y-%m-%d-%H.%M.%S",time.localtime()),
                                   "payload" : random.randint(1,1000)})
             sensor_IO.write(message+"\n");
         sensor_IO.close();

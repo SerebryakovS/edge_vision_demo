@@ -7,6 +7,7 @@ from flask import make_response;
 from flask import Flask, render_template,url_for
 from get_config import get_config
 flask_app = Flask(__name__);
+CONTROLLER_STATUS = "unknown";
 #-------------------------------------------------
 @flask_app.context_processor
 def override_url_for():
@@ -23,11 +24,19 @@ def dated_url_for(endpoint, **values):
 def main_page():
     return render_template("index.html");
 #-------------------------------------------------
-@flask_app.route("/test_request",methods=['POST'])
-def return_status():
+@flask_app.route("/get_status",methods=['POST'])
+def get_status():
+    global CONTROLLER_STATUS;
     jsoned_data = json.loads(request.get_data().decode());
-    print(jsoned_data);
-    response_body = {'state':"normal_state"};
+    response_body = {'status':CONTROLLER_STATUS};
+    return make_response(jsonify(response_body)), 200;
+#-------------------------------------------------
+@flask_app.route("/set_status",methods=['POST'])
+def set_status():
+    global CONTROLLER_STATUS;
+    jsoned_data = json.loads(request.get_data().decode());
+    CONTROLLER_STATUS = jsoned_data['status'];
+    response_body = {'status':CONTROLLER_STATUS};
     return make_response(jsonify(response_body)), 200;
 if __name__ == "__main__":
     params = get_config();
