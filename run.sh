@@ -1,14 +1,13 @@
 #!/bin/bash
 
 echo "starting sensors"
-./sensor.py 100000 &
+python3 sensor.py 100000 &
 sleep 0.1
 echo "starting manipulator"
-./manipulator.py &
+python3 manipulator.py &
 sleep 0.1
 echo "starting third_party_server"
-./third_party_server.py &
+python3 third_party_server.py &
 sleep 0.1
 echo "starting controller"
-./controller.py &
-sleep 0.1
+python3 controller.py

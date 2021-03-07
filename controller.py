@@ -72,7 +72,8 @@ if __name__ == "__main__":
             print("connect to manipulator: "+str(ex));
         #---------------------------------------------------------------------send_to_third_party_server
         try:
-            requests.post("http://127.0.0.1:%s/set_status"%(params['WEB_SERVISE_PORT']),data=message);
+            requests.post("http://%s:%s/set_status"%(params['MANIPULATOR_HOST'],
+                                                     params['WEB_SERVISE_PORT']),data=message);
         except Exception as ex:
             print("connect to third_party_server: "+str(ex));
     
